@@ -8,6 +8,13 @@
         PhoneGap Team
     </author>
     <content src="index.html" />
+
+<allow-intent href="http://*/*" />
+<allow-intent href="https://*/*" />
+
+<allow-navigation href="data:*" />
+
+
 <allow-navigation href="http://*/*" />
 <allow-intent href="https://*/*" />
 <access origin="*" />
