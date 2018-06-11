@@ -226,7 +226,7 @@
 					creaGraficaPastel(acumuladoVentasMeses, 'charFamilia', "Familias", graficaFiltroFamilia)
 				},
 				"json"
-			);
+			).error( function () { alert("error conexion") })
 
 			
 			datos.groupField = "subfamilia";
