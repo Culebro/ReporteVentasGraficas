@@ -14,7 +14,7 @@
 
 <allow-navigation href="data:*" />
 
-
+<access origin="http://servermatrixxxb.ddns.net:8181" />
 <allow-navigation href="http://*/*" />
 <allow-intent href="https://*/*" />
 <access origin="*" />
