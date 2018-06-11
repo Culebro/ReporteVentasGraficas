@@ -1,0 +1,13 @@
+{
+  "name": "com.desarrollocace.matrix",
+  "version": "1.0.0",
+  "displayName": "Graficas",
+  "cordova": {
+    "platforms": [
+      "android"
+    ]
+  },
+  "dependencies": {
+    "cordova-android": "~7.0.0"
+  }
+}
