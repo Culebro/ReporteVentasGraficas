@@ -2,6 +2,8 @@
 <html>
 
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<script>
 		var condicion = {
@@ -28,6 +30,7 @@
 			$.get("http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php", {opc:'anual'},
 				function (data, textStatus, jqXHR) {
 					$.each(data, function (i, item) { 
+						$("#saluda").html(item.ANIO)
 						 acumuladoVentasMeses.push({y: (item.TOTAL.toFixed(2)*1), label: item.ANIO,x:item.ANIO})
 						 			var chart = new CanvasJS.Chart("chartContainer", {
 				theme: "light2", // "light1", "light2", "dark1", "dark2"
@@ -224,7 +227,7 @@
 					creaGraficaPastel(acumuladoVentasMeses, 'charFamilia', "Familias", graficaFiltroFamilia)
 				},
 				"json"
-			);
+			)
 
 			
 			datos.groupField = "subfamilia";
@@ -286,6 +289,7 @@
 </head>
 
 <body>
+	<div id="saluda"></div>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-2"></div>
@@ -362,8 +366,8 @@
 			</div>
 		</div>
 	
-		<script src="phonegap.js"></script>
-	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript" src="cordova.js"></script>
+	<script src="scripts/canvas.js"></script>
 	<script src="scripts/jquery.js"></script>
 </body>
 
