@@ -8,15 +8,12 @@
         PhoneGap Team
     </author>
     <content src="index.html" />
-<gap:plugin name="cordova-plugin-whitelist" source="npm"/>
-<allow-intent href="http://*/*" />
-<allow-intent href="https://*/*" />
-
-<allow-navigation href="data:*" />
-
-<access origin="http://servermatrixxxb.ddns.net:8181/graficas" />
-<allow-navigation href="http://*/*" />
-<allow-intent href="https://*/*" />
-<access origin="*" />
-    <engine name="android" spec="~4.0.0" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-navigation href="data:*" />
+    <access origin="http://servermatrixxxb.ddns.net:8181/graficas" />
+    <allow-navigation href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <access origin="*" />
+    <engine name="android" spec="~5.0.0" />
 </widget>

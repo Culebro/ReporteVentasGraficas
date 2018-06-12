@@ -8,7 +8,6 @@
         PhoneGap Team
     </author>
     <content src="index.html" />
-    <gap:plugin name="cordova-plugin-whitelist" source="npm" />
     <allow-intent href="http://*/*" />
     <allow-navigation href="data:*" />
     <access origin="http://servermatrixxxb.ddns.net:8181/graficas" />
