@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE HTML>
 <html>
 
@@ -371,4 +372,377 @@
 	<script src="scripts/jquery.js"></script>
 </body>
 
+=======
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'"
+/>
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<script>
+		var condicion = {
+			anio: 0,
+			mes:0,
+			familia:'',
+			subFamilia:'',
+			marca:'',
+			sucursal:"",
+			groupDate: "",
+			groupField: "",
+			opc: ""
+		};
+		statusMes = false
+		statusFamilia = false
+		statusSubfamilia = false
+		statusMarca = false
+		statusAlmacen = false
+
+		window.onload = function () {
+			var anioSeleccionado = 0;
+			var meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+			var acumuladoVentasMeses = [];
+			$.get("http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php", {opc:'anual'},
+				function (data, textStatus, jqXHR) {
+					$.each(data, function (i, item) { 
+						 acumuladoVentasMeses.push({y: (item.TOTAL.toFixed(2)*1), label: item.ANIO,x:item.ANIO})
+						 			var chart = new CanvasJS.Chart("chartContainer", {
+				theme: "light2", // "light1", "light2", "dark1", "dark2"
+				animationEnabled: true,
+				title: {
+					text: "Acumulado de ventas"
+				},
+				axisY: {
+						title: "Total"
+				},
+				data: [{
+					type: "column",  
+					showInLegend: true, 
+					legendMarkerColor: "grey",
+					legendText: "Periodo",
+ 					click: graficaFiltroAnual,
+					dataPoints: acumuladoVentasMeses
+									 	}]	});
+			chart.render();
+					});
+				},
+				"json"
+			);
+		}
+		
+
+ 		graficaFiltroAnual = function graficaFiltroAnual(e) {
+			 condicion = {
+					anio: e.dataPoint.x,
+					mes: 0,
+					familia: '',
+					subFamilia: '',
+					marca: '',
+					sucursal: "",
+					groupDate: "month",
+					groupField: "",
+					opc: "barra"
+				};
+			creaGraficaBarra(condicion)
+ 			condicion.opc = "familia"
+ 			condicion.groupDate = "year"
+			getDatosFiltrados(condicion)
+		}
+		graficaFiltroFamilia = function graficaFiltroFamilia(e) {
+			condicion.familia = e.dataPoint.x;
+			condicion.opc = "barra"
+			condicion.groupDate = "month"
+			creaGraficaBarra(condicion)
+			condicion.opc ="familia"
+			condicion.groupField = "familia"
+			if (!statusFamilia) { //Se elimina "caché" del filtro
+				condicion.familia = ""
+			}			
+			statusFamilia = !statusFamilia
+			getDatosFiltrados( condicion)
+		}
+		graficaFiltroSubFamilia = function graficaFiltroSubFamilia(e) {
+			condicion.subFamilia = e.dataPoint.x;
+			condicion.opc = "barra"
+			condicion.groupDate = "month"
+			creaGraficaBarra(condicion)
+			condicion.opc = "familia"
+			statusSubfamilia = !statusSubfamilia
+			if (!statusSubfamilia) { //Se elimina "caché" del filtro
+				condicion.subFamilia = ""
+			}			
+			condicion.groupField = "subfamilia"
+			getDatosFiltrados(condicion)
+		}
+		graficaFiltroMarca = function graficaFiltroMarca(e) {
+			if( e.dataPoint.x == "OTROS") {
+				///alert("Otra accion")
+				//return 0;
+			}
+			condicion.marca = e.dataPoint.x;
+			condicion.opc = "barra"
+			condicion.groupDate = "month"
+			creaGraficaBarra(condicion)
+			condicion.opc = "familia"
+			condicion.groupField = "marca"
+			statusMarca = !statusMarca
+			if ( !statusMarca) { //Se elimina "caché" del filtro
+				condicion.marca =""
+			}
+			getDatosFiltrados(condicion)
+		}
+		graficaFiltroSucursal = function graficaFiltroSucursal(e) {
+			condicion.sucursal = e.dataPoint.x;
+			condicion.opc = "barra"
+			condicion.groupDate = "month"
+			creaGraficaBarra(condicion)
+			condicion.opc = "familia"
+			condicion.groupField = "almacen"
+			statusAlmacen = !statusAlmacen
+			if (!statusAlmacen) { //Se elimina "caché" del filtro
+				condicion.sucursal = ""
+			}			
+			getDatosFiltrados(condicion)
+		}
+		function graficaFiltraMes(e) {
+				let mes = e.dataPoint.x
+				condicion.mes = mes
+				condicion.opc = "barra"
+				condicion.groupDate = "month"
+				creaGraficaBarra(condicion)
+				condicion.opc = "familia"
+				getDatosFiltrados(condicion)
+	
+		}
+
+		function creaGraficaBarra( datos) {
+			var meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+			var acumuladoVentasMeses = [];
+			console.log(datos)
+
+			$.ajax({
+				type: "get",
+				url: "http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php",
+				data: datos,
+				dataType: "json",
+				async: false,
+				success: function (data) {
+
+					$.each(data, function (i, item) {
+						acumuladoVentasMeses.push({ y: (item.TOTAL.toFixed(2) * 1), label: meses[item.MES], x: item.MES })
+						var chart = new CanvasJS.Chart("charMeses", {
+							theme: "light2", // "light1", "light2", "dark1", "dark2"
+							animationEnabled: true,
+							title: {
+								text: "Acumulado de ventas Mensual"
+							},
+							axisY: {
+								title: "Total"
+							},
+							data: [{
+								type: "column",
+								showInLegend: true,
+								legendMarkerColor: "grey",
+								legendText: "Meses transcurridos",
+								click: graficaFiltraMes,
+								dataPoints: acumuladoVentasMeses
+							}]
+						});
+						chart.render();
+					});
+				}
+			});
+		}
+
+	
+
+		function creaGraficaPastel(data ,chartId,titulo,funcion){
+			var chart = new CanvasJS.Chart(chartId, {
+				animationEnabled: true,
+				title:{
+					text: titulo
+				},
+				data: [{
+					type: "pie",
+					click:funcion,
+					dataPoints: data
+				}]
+			});
+			chart.render();
+		}
+
+
+
+
+
+		function getDatosFiltrados( datos){
+
+			if ( datos.subFamilia =="OTROS" || datos.marca == 'OTROS') {
+ 					datos.MARCA = "";
+					 datos.subFamilia = ""
+					alert("Funcionalidad no disponible por el momento")
+				return 0;
+			}
+			if( datos.mes == 0 ){
+				datos.groupDate = "year"
+			}
+			datos.groupField ="familia";
+			if (!statusFamilia) {
+				datos.familia = ""
+			}
+			console.log( statusFamilia)
+			// GRAFICA FAMILIAS ANUAL
+			$.get("http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php", datos,
+				function (data, textStatus, jqXHR) {
+					acumuladoVentasMeses = [];
+					$.each(data, function (i, item) {
+						acumuladoVentasMeses.push({ y: item.TOTAL.toFixed(2), label: item.CAMPO, x: item.CAMPO })
+					});
+					creaGraficaPastel(acumuladoVentasMeses, 'charFamilia', "Familias", graficaFiltroFamilia)
+				},
+				"json"
+			);
+
+			
+			datos.groupField = "subfamilia";
+			if( !statusSubfamilia){
+				datos.subFamilia = ""
+			}
+			$.ajax({
+				type: "get",
+				url: "http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php",
+				data: datos,
+				dataType: "json",
+				async: false,
+				success: function (data) {
+					acumuladoVentasMeses = [];
+					$.each(data, function (i, item) {
+						acumuladoVentasMeses.push({ y: item.TOTAL.toFixed(2), label: item.CAMPO, x: item.CAMPO })
+					});
+					creaGraficaPastel(acumuladoVentasMeses, 'charSubFamilia', "Sub Familias", graficaFiltroSubFamilia)
+				}
+			});
+
+			datos.groupField = "marca";
+			if (!statusMarca) {
+				datos.marca = ""
+			}
+
+			//GRAFICA ANUAL DE LAS MARCAS
+			$.get("http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php", datos,
+				function (data, textStatus, jqXHR) {
+					acumuladoVentasMeses = [];
+					$.each(data, function (i, item) {
+						acumuladoVentasMeses.push({ y: item.TOTAL.toFixed(2), label: item.CAMPO, x: item.CAMPO })
+					});
+					creaGraficaPastel(acumuladoVentasMeses, 'charMarca', "Marcas", graficaFiltroMarca)
+				},
+				"json"
+			);
+
+			datos.groupField = "almacen";
+			if (!statusAlmacen) {
+				datos.sucursal = ""
+			}
+			//GRAFICA ANUAL DE LAS SUCURSALES
+			$.get("http://servermatrixxxb.ddns.net:8181/graficas/ControladorGrafica.php", datos,
+				function (data, textStatus, jqXHR) {
+					acumuladoVentasMeses = [];
+					$.each(data, function (i, item) {
+						acumuladoVentasMeses.push({ y: item.TOTAL.toFixed(2), label: item.CAMPO, x: item.CAMPO })
+					});
+					creaGraficaPastel(acumuladoVentasMeses, 'charSucursal', "Sucursales", graficaFiltroSucursal)
+				},
+				"json"
+			);
+ 			datos.groupField = "";
+		}
+
+	</script>
+
+</head>
+
+<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 col-md-offset-">
+					<div class="row">
+						<div class="col-md-12" style="background-color: #37474f;height: 50px;">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas</h2>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" >
+								<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-5" style="margin-left: 2%">
+					<div class="row">
+						<div class="col-md-12" style="background-color: #37474f;height: 50px;">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas Mensual</h2>
+						</div>
+						<div class="col-md-12">
+							<div id="charMeses" style="height: 370px; width: 100%;"></div>
+						</div>
+					</div>
+						
+				</div>
+				<div class="col-md-5" style="margin-left: 7%">
+					<div class="row">
+						<div class="col-md-12" style="background-color: #37474f;height: 50px;">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas Sucursales</h2>
+						</div>
+						<div class="col-md-12">
+							<div id="charSucursal" style="height: 370px; width: 100%;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-5"  style="margin-left: 2%">
+					<div class="row" style="background-color: #37474f;height: 50px;">
+						<div class="col-md-12">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas Familias</h2>
+						</div>
+						<div class="col-md-12">
+							<div id="charFamilia" style="height: 370px; width: 100%;"></div>
+						</div>
+					</div>
+					
+				</div>
+			
+				<div class="col-md-5 " style="margin-left: 5%;">
+					<div class="row">
+						<div class="col-md-12" style="background-color: #37474f;height: 50px;">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas Sub Familias</h2>
+						</div>
+						<div class="col-md-12"></div>
+					</div>
+					<div id="charSubFamilia" style="height: 370px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-6  ">
+					<div class="row">
+						<div class="col-md-12" style="background-color: #37474f;height: 50px;">
+							<h2 style="color: #fafafa; font-family:'century gothic'; font-weight: bold;">Ventas Marcas</h2>
+						</div>
+						<div class="col-md-12"></div>
+					</div>
+					<div id="charMarca" style="height: 370px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+	<script type="text/javascript" src="cordova.js"></script>
+	<script src="scripts/canvas.js"></script>
+	<script src="scripts/jquery.js"></script>
+</body>
+
+>>>>>>> 78c022e03a74605201f5b1ed259ac0da6a930592
 </html>
